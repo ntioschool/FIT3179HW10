@@ -1,0 +1,96 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "url": "train_service_passenger_counts_sampled.csv"
+    },
+    "transform": [
+    {"filter": {"selection": "city_selector"}},
+    {"filter": {"selection": "testselector"}},
+        {
+        "aggregate": [
+          {
+            "op": "sum",
+            "field": "Passenger_Boardings",
+            "as": "Total_Boardings"
+          }
+        ],
+        "groupby": ["Day_of_Week"]
+        },
+        {
+            "fold": ["Total_Boardings"],
+            "as": ["Measure", "Value"]
+        }
+      
+    ],
+    "selection": {
+        "city_selector": {
+          "type": "single",
+          "fields": ["Mode"],
+          "bind": {
+            "input": "select",
+            "options": [
+              null,
+              "Metro",
+              "VLine"
+            ],
+            "labels": [
+              "Show All",
+              "Metro",
+              "VLine"
+            ],
+            "name": "Type of train Selection:"
+          }
+        },
+        "testselector": {
+            "type": "multi",
+            "fields": ["Day_Type"],
+            "bind": {
+              "input": "select",
+              "options": [
+                null,
+                "School Holiday",
+                "Public Holiday"
+              ],
+              "labels": [
+                "Show All",
+                "School Holiday",
+                "Public Holiday"
+              ],
+              "name": "Day Type Selection:"
+            }
+          }
+      },
+
+    "width": 400,
+    "height": 300,
+    "mark": "bar",
+    "encoding": {
+      "x": {
+        "field": "Day_of_Week",
+        "type": "nominal",
+        "title": "Day of the Week",
+        "sort": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+      },
+      "y": {
+        "field": "Value",
+        "type": "quantitative",
+        "title": "Total passengers boarding"
+      },
+      "color": {
+        "field": "Measure",
+        "type": "nominal",
+        "title": "Measure",
+        "scale": {
+          "domain": ["Total_Boardings"],
+          "range": ["#1f77b4"]
+        }
+      },
+      "tooltip":[
+        {"field": "Day_of_Week", "type": "nominal"},
+        {"field": "Total_Boardings", "type": "quantitative", "format": ","}
+    ]  
+    }
+
+
+  }
+  
